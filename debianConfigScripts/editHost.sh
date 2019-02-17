@@ -1,7 +1,7 @@
 #!/bin/bash
 # remove specified host from /etc/hosts
 removehost() {
-    if [ $name ]
+    if [ $name ];
     then
 	echo $name
         local HOSTNAME=$name
@@ -21,12 +21,12 @@ removehost() {
 
 #change hostname
 changename() {
-    if [ $domain ]
+    if [ $domain ];
     then
         IP="127.0.1.1"
         HOSTNAME=$name
-	DOMAIN=$domain
-        if [ -n "$(grep $HOSTNAME /etc/hosts)" ]
+		DOMAIN=$domain
+        if [ -n "$(grep $HOSTNAME /etc/hosts)" ];
             then
                 echo "$HOSTNAME ya existe:";
                 echo $(grep $HOSTNAME /etc/hosts);
@@ -35,7 +35,7 @@ changename() {
                 printf "%s\t%s\n" "$IP" "$HOSTNAME"".""$DOMAIN" "$HOSTNAME" | sudo tee -a /etc/hosts > /dev/null;
 				echo "ejecutando systemctl"
 				sudo hostnamectl set-hostname "$HOSTNAME"".""$DOMAIN";
-                if [ -n "$(grep $HOSTNAME /etc/hosts)" ]
+                if [ -n "$(grep $HOSTNAME /etc/hosts)" ];
                     then
                         echo "$HOSTNAME agregado correctamente a /etc/hosts:";
                         echo $(grep $HOSTNAME /etc/hosts);
@@ -56,7 +56,7 @@ addhost() {
         IP=$ip
         HOSTNAME=$name
 	DOMAIN=$domain
-        if [ -n "$(grep $HOSTNAME /etc/hosts)" ]
+        if [ -n "$(grep $HOSTNAME /etc/hosts)" ];
             then
                 echo "$HOSTNAME ya existe:";
                 echo $(grep $HOSTNAME /etc/hosts);
@@ -78,23 +78,40 @@ addhost() {
     fi
 }
 
-if [ $1 = "changename" ];
+if [ $1 ]
    then
-	name=$2
-	domain=$3
-	changename $name $domain
-fi
+	if [ $1 = "changename" ];
+	   then
+		name=$2
+		domain=$3
+		changename $name $domain
+	fi
 
-if [ $1 = "addhost" ]
-  then
-	ip=$2
-	name=$3
-	domain=$4
-	addhost $ip $name $domain
-fi
+	if [ $1 = "addhost" ];
+	   then
+		ip=$2
+		name=$3
+		domain=$4
+		addhost $ip $name $domain
+	fi
 
-if [ $1 = "removehost" ];
-   then
-	name=$2
-	removehost $name
+	if [ $1 = "removehost" ];
+	   then
+		name=$2
+		removehost $name
+	fi
+	
+	if [ $1 != "changeme" ] || [ $1 != "changeme" ] || [ $1 != "changeme" ];
+	  then
+		echo "No has elgido una función válida"
+		echo "		changename + name + domain"
+		echo "		addhost + ip + name + domain"
+		echo "		removehost + name"
+	fi
+else
+	echo "No has introducido ningún parametro"
+	echo "funciones:"
+	echo "		changename + name + domain"
+	echo "		addhost + ip + name + domain"
+	echo "		removehost + name"
 fi
