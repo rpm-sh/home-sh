@@ -4,18 +4,21 @@ removehost() {
     if [ $name ];
     then
 	echo $name
-        local HOSTNAME=$name
+        HOSTNAME=$name
         if [ -n "$(grep $HOSTNAME /etc/hosts)" ];
         then
             echo "$HOSTNAME econtrado en tu fichero /etc/hosts, borrando..."
             sudo sed -i".bak" "/$HOSTNAME/d" /etc/hosts
+	    exit 1
         else
             echo "$HOSTNAME no encontrado /etc/hosts"
+	    exit 1
         fi
     else
         echo "Error: No has introducido ningun parametro."
         echo "uso: "
         echo " removehost hostname"
+	exit 1
     fi
 }
 
@@ -30,6 +33,7 @@ changename() {
             then
                 echo "$HOSTNAME ya existe:";
                 echo $(grep $HOSTNAME /etc/hosts);
+		exit 1
             else
                 echo "Cambiando $HOSTNAME en tu fichero /etc/hosts";
                 printf "%s\t%s\n" "$IP" "$HOSTNAME"".""$DOMAIN" "$HOSTNAME" | sudo tee -a /etc/hosts > /dev/null;
@@ -39,14 +43,17 @@ changename() {
                     then
                         echo "$HOSTNAME agregado correctamente a /etc/hosts:";
                         echo $(grep $HOSTNAME /etc/hosts);
+			exit 1
                     else
                         echo "Error al agregar $HOSTNAME, prueba de nuevo!";
+			exit 1
                 fi
         fi
     else
         echo "Error: No has introducido ningun parametro."
         echo "uso: "
         echo " changename hostname domain"
+	exit 1
     fi
 }
 #add new ip host pair to /etc/hosts
@@ -60,6 +67,7 @@ addhost() {
             then
                 echo "$HOSTNAME ya existe:";
                 echo $(grep $HOSTNAME /etc/hosts);
+		exit 1
             else
                 echo "Agregando $HOSTNAME a tu fichero /etc/hosts";
                 printf "%s\t%s\n" "$IP" "$HOSTNAME"".""$DOMAIN" "$HOSTNAME" | sudo tee -a /etc/hosts > /dev/null;
@@ -67,14 +75,17 @@ addhost() {
                     then
                         echo "$HOSTNAME agregado correctamente:";
                         echo $(grep $HOSTNAME /etc/hosts);
+			exit 1
                     else
                         echo "Error al agregar $HOSTNAME, prueba de nuevo!";
+			exit 1
                 fi
         fi
     else
         echo "Error: No has introducido ningun parametro."
         echo "uso: "
         echo " addhost ip hostname domain"
+	exit 1
     fi
 }
 
